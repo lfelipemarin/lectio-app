@@ -1,10 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lectio_app/views/daily_readings_page.dart';
-import 'package:lectio_app/views/home_page.dart';
-import 'package:lectio_app/views/saints_page.dart';
+import 'package:lectio_app/views/authentication_page.dart';
+import 'package:lectio_app/views/authenticated_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -16,56 +19,29 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Lectio Divina App',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: const _MainPage(),
+      home: const AuthChecker(), // Página que controla la autenticación
     );
   }
 }
 
-class _MainPage extends StatefulWidget {
-  const _MainPage();
-
-  @override
-  _MainPageState createState() => _MainPageState();
-}
-
-class _MainPageState extends State<_MainPage> {
-  int _selectedIndex = 0;
-
-  // Las pantallas que se mostrarán en cada pestaña
-  final List<Widget> _pages = [
-    const DailyReadingsPage(),
-    const HomePage(),
-    const SaintsPage(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+class AuthChecker extends StatelessWidget {
+  const AuthChecker({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Lecturas del Día',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Lectios',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Santos del Día',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(), // Escucha el estado de autenticación
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return const Center(child: Text('Error de autenticación'));
+        } else if (snapshot.hasData) {
+          return const AuthenticatedPage(); // Si el usuario está logueado, mostramos la página de navegación
+        } else {
+          return const AuthenticationPage(); // Si no está logueado, mostramos la página de inicio de sesión
+        }
+      },
     );
   }
 }
