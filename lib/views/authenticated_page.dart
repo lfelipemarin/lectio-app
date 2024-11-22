@@ -17,7 +17,7 @@ class AuthenticatedPageState extends State<AuthenticatedPage> {
   final List<Widget> _pages = [
     const DailyReadingsPage(),
     const GuidedLectioDivinaPage(),
-    LectioListPage()
+    const LectioListPage()
     // TODO: Implement daily saints page
     // const SaintsPage(),
   ];

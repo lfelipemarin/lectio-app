@@ -1,3 +1,4 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,7 +20,6 @@ class LectioNotifier extends StateNotifier<LectioState> {
 
     if (state.isLoading) return; // Prevent loading if already loading
 
-    // Set loading state
     state = state.copyWith(isLoading: true);
 
     try {
@@ -30,21 +30,18 @@ class LectioNotifier extends StateNotifier<LectioState> {
           .orderBy('createdAt', descending: true)
           .limit(10);
 
-      if (state.createdAtFilter != null && state.createdAtFilter!.isNotEmpty) {
-        query.where('createdAt', isGreaterThanOrEqualTo: state.createdAtFilter);
-      }
-
       final snapshot = await query.get();
 
       final List<LectioModel> lectios = snapshot.docs
           .map((doc) => LectioModel.fromFirestore(doc))
           .toList();
 
-      // Update state with the new data and pagination information
+      // Guarda los lectios originales en allLectios y actualiza lectios
       state = state.copyWith(
+        allLectios: lectios,
         lectios: lectios,
         isLoading: false,
-        hasMore: lectios.length == 10,  // Check if there are more items to load
+        hasMore: lectios.length == 10,
         lastDocument: snapshot.docs.isNotEmpty ? snapshot.docs.last : null,
       );
     } catch (e) {
@@ -53,6 +50,7 @@ class LectioNotifier extends StateNotifier<LectioState> {
     }
   }
 
+
   void setFilter(String? createdAtFilter) {
     state = state.copyWith(createdAtFilter: createdAtFilter);
     _applyFilter();
@@ -60,17 +58,18 @@ class LectioNotifier extends StateNotifier<LectioState> {
 
   void _applyFilter() {
     if (state.createdAtFilter == null || state.createdAtFilter!.isEmpty) {
-      // If no filter is set, return all the lectios
-      state = state.copyWith(lectios: state.lectios);
+      // Restaurar todos los lectios si no hay filtro
+      state = state.copyWith(lectios: state.allLectios, hasMore: state.allLectios.length == 10);
     } else {
-      // Filter based on the selected date (Assumes 'createdAt' is in 'yyyy-MM-dd' format)
-      final filteredLectios = state.lectios.where((lectio) {
+      // Aplicar filtro
+      final filteredLectios = state.allLectios.where((lectio) {
         return lectio.createdAt.contains(state.createdAtFilter!);
       }).toList();
 
-      state = state.copyWith(lectios: filteredLectios);
+      state = state.copyWith(lectios: filteredLectios, hasMore: filteredLectios.length == 10);
     }
   }
+
 
   Future<void> loadMoreLectios(User? user) async {
     if (user == null || !state.hasMore || state.isLoading) return;
@@ -79,23 +78,28 @@ class LectioNotifier extends StateNotifier<LectioState> {
     state = state.copyWith(isLoading: true);
 
     try {
-      final query = FirebaseFirestore.instance
+      // Construir la consulta inicial
+      var query = FirebaseFirestore.instance
           .collection('users')
           .doc(user.email)
           .collection("lectios")
+          .orderBy('createdAt', descending: true)
           .startAfterDocument(state.lastDocument!)
           .limit(10);
 
+      // Agregar filtro condicionalmente
       if (state.createdAtFilter != null && state.createdAtFilter!.isNotEmpty) {
-        query.where('createdAt', isGreaterThanOrEqualTo: state.createdAtFilter);
+        query = query.where('createdAt', isGreaterThanOrEqualTo: state.createdAtFilter);
       }
 
+      // Ejecutar la consulta
       final snapshot = await query.get();
 
       final List<LectioModel> lectios = snapshot.docs
           .map((doc) => LectioModel.fromFirestore(doc))
           .toList();
 
+      // Actualizar el estado con los nuevos datos
       state = state.copyWith(
         lectios: [...state.lectios, ...lectios],
         isLoading: false,
@@ -107,5 +111,6 @@ class LectioNotifier extends StateNotifier<LectioState> {
       throw Exception('Error loading more lectios: $e');
     }
   }
+
 }
 

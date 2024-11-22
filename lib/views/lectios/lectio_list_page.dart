@@ -1,10 +1,6 @@
-import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lectio_app/services/lectio_service.dart';
-import 'package:lectio_app/models/lectio_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../providers/lectio_provider.dart';
@@ -14,7 +10,7 @@ final authUserProvider = StreamProvider<User?>((ref) {
 });
 
 class LectioListPage extends ConsumerStatefulWidget {
-  const LectioListPage({Key? key}) : super(key: key);
+  const LectioListPage({super.key});
 
   @override
   _LectioListPageState createState() => _LectioListPageState();
@@ -49,21 +45,33 @@ class _LectioListPageState extends ConsumerState<LectioListPage> {
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
+      initialDate: _selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
 
     if (pickedDate != null && pickedDate != _selectedDate) {
+      final formattedDate = '${pickedDate.toLocal()}'.split(' ')[0];
       setState(() {
         _selectedDate = pickedDate;
-        // Format the date as yyyy-MM-dd and set it to the search controller
-        _searchController.text = '${_selectedDate!.toLocal()}'.split(' ')[0];
-        // Trigger the filter
-        ref.read(lectioProvider.notifier).setFilter(_searchController.text);
+        _searchController.text = formattedDate;
       });
+      // Trigger the filter in your provider
+      ref.read(lectioProvider.notifier).setFilter(formattedDate);
     }
   }
+
+// Function to clear the selected date
+  void clearDate() {
+    setState(() {
+      _selectedDate = null;
+      _searchController.text = "";
+    });
+    // Reset the filter in your provider
+    ref.read(lectioProvider.notifier).setFilter(_searchController.text);
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +101,11 @@ class _LectioListPageState extends ConsumerState<LectioListPage> {
               readOnly: true,
             ),
             const SizedBox(height: 16),
+            if (_searchController.text.isNotEmpty)
+              ElevatedButton(
+                onPressed: clearDate,
+                child: const Text('Limpiar fecha'),
+              ),
             Expanded(
               child: authUser.when(
                 data: (user) {
