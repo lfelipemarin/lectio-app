@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:lectio_app/views/daily_readings_page.dart';
 import 'package:lectio_app/views/guided_lectio_divina_page.dart';
-import 'package:lectio_app/views/saints_page.dart';
+import 'package:lectio_app/views/lectios/lectio_list_page.dart';
 
 class AuthenticatedPage extends StatefulWidget {
-  const AuthenticatedPage({Key? key}) : super(key: key);
+  const AuthenticatedPage({super.key});
 
   @override
-  _AuthenticatedPageState createState() => _AuthenticatedPageState();
+  AuthenticatedPageState createState() => AuthenticatedPageState();
 }
 
-class _AuthenticatedPageState extends State<AuthenticatedPage> {
+class AuthenticatedPageState extends State<AuthenticatedPage> {
   int _selectedIndex = 0;
 
   // Las pantallas que se mostrarán en cada pestaña
   final List<Widget> _pages = [
     const DailyReadingsPage(),
     const GuidedLectioDivinaPage(),
-    const SaintsPage(),
+    LectioListPage()
+    // TODO: Implement daily saints page
+    // const SaintsPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -41,9 +43,14 @@ class _AuthenticatedPageState extends State<AuthenticatedPage> {
             label: 'Lectio Guiada',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Santos del Día',
+            icon: Icon(Icons.auto_stories),
+            label: 'Lectios Guardadas',
           ),
+          // TODO: Implement daily saints page
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.person),
+          //   label: 'Santos del Día',
+          // ),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,

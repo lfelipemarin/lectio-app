@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
 }
 
 class AuthChecker extends StatelessWidget {
-  const AuthChecker({Key? key}) : super(key: key);
+  const AuthChecker({super.key});
 
   @override
   Widget build(BuildContext context) {

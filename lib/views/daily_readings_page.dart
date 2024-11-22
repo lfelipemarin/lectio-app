@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../viewmodels/daily_readings_viewmodel.dart'; // Adjust as necessary
-import 'dart:developer' as developer;
 
 class DailyReadingsPage extends ConsumerStatefulWidget {
   const DailyReadingsPage({super.key});
 
   @override
-  _DailyReadingsPageState createState() => _DailyReadingsPageState();
+  DailyReadingsPageState createState() => DailyReadingsPageState();
 }
 
-class _DailyReadingsPageState extends ConsumerState<DailyReadingsPage> {
+class DailyReadingsPageState extends ConsumerState<DailyReadingsPage> {
   String _selectedDate = DateTime.now().toIso8601String().substring(0, 10); // Default date
 
   @override

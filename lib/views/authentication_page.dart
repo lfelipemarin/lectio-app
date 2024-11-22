@@ -6,10 +6,10 @@ class AuthenticationPage extends StatefulWidget {
   const AuthenticationPage({super.key});
 
   @override
-  _AuthenticationPageState createState() => _AuthenticationPageState();
+  AuthenticationPageState createState() => AuthenticationPageState();
 }
 
-class _AuthenticationPageState extends State<AuthenticationPage> {
+class AuthenticationPageState extends State<AuthenticationPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
