@@ -5,9 +5,8 @@ class SaintsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Santos del Día')),
-      body: const Center(
+    return const Scaffold(
+      body: Center(
         child: Text(
           'Información de Santos del Día aquí',
           style: TextStyle(fontSize: 18),

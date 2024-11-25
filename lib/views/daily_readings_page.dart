@@ -18,9 +18,6 @@ class DailyReadingsPageState extends ConsumerState<DailyReadingsPage> {
     final dailyReadings = ref.watch(dailyReadingsProvider(_selectedDate));
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Lecturas del Día'),
-      ),
       body: SingleChildScrollView(
         // Wrap content inside SingleChildScrollView
         child: Column(

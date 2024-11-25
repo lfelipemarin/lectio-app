@@ -65,9 +65,6 @@ class _GuidedLectioDivinaPageState extends ConsumerState<GuidedLectioDivinaPage>
     final authUser = ref.watch(authUserProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Lectio Divina'),
-      ),
       body: authUser.when(
         data: (user) {
           if (user == null) {

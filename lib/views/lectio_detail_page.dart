@@ -79,7 +79,6 @@ class _LectioDetailPageState extends ConsumerState<LectioDetailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalle de Lectio'),
         actions: [
           IconButton(
             icon: Icon(_isEditing ? Icons.check : Icons.edit),
