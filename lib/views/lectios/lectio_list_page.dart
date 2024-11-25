@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../providers/lectio_provider.dart';
+import '../lectio_detail_page.dart';
 
 final authUserProvider = StreamProvider<User?>((ref) {
   return FirebaseAuth.instance.authStateChanges();
@@ -129,6 +130,14 @@ class _LectioListPageState extends ConsumerState<LectioListPage> {
                         child: ListTile(
                           title: Text(lectio.lectio),
                           subtitle: Text('Creado en: ${lectio.createdAt}'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LectioDetailPage(lectio: lectio),
+                              ),
+                            );
+                          },
                         ),
                       );
                     },

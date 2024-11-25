@@ -11,7 +11,7 @@ class LectioModel {
   final bool completedActio;
   final bool reminder;
 
-  // Add this field to store the document snapshot
+  // Field to store the document snapshot
   final DocumentSnapshot? documentSnapshot;
 
   LectioModel({
@@ -24,7 +24,7 @@ class LectioModel {
     required this.updatedAt,
     required this.completedActio,
     required this.reminder,
-    this.documentSnapshot, // Optional field
+    this.documentSnapshot,
   });
 
   factory LectioModel.fromFirestore(DocumentSnapshot doc) {
@@ -41,6 +41,46 @@ class LectioModel {
       completedActio: data['completedActio'] ?? false,
       reminder: data['reminder'] ?? false,
       documentSnapshot: doc, // Store the snapshot
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'userId': userId,
+      'lectio': lectio,
+      'meditatio': meditatio,
+      'oratio': oratio,
+      'actio': actio,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      'completedActio': completedActio,
+      'reminder': reminder,
+    };
+  }
+
+  LectioModel copyWith({
+    String? userId,
+    String? lectio,
+    String? meditatio,
+    String? oratio,
+    String? actio,
+    String? createdAt,
+    String? updatedAt,
+    bool? completedActio,
+    bool? reminder,
+    DocumentSnapshot? documentSnapshot,
+  }) {
+    return LectioModel(
+      userId: userId ?? this.userId,
+      lectio: lectio ?? this.lectio,
+      meditatio: meditatio ?? this.meditatio,
+      oratio: oratio ?? this.oratio,
+      actio: actio ?? this.actio,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      completedActio: completedActio ?? this.completedActio,
+      reminder: reminder ?? this.reminder,
+      documentSnapshot: documentSnapshot ?? this.documentSnapshot,
     );
   }
 }

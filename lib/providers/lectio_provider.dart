@@ -112,5 +112,17 @@ class LectioNotifier extends StateNotifier<LectioState> {
     }
   }
 
+  void updateLectio(LectioModel updatedLectio) {
+    final updatedList = state.allLectios.map((lectio) {
+      return 'lectio-${lectio.createdAt}' == 'lectio-${updatedLectio.createdAt}' ? updatedLectio : lectio;
+    }).toList();
+
+    state = state.copyWith(
+      allLectios: updatedList,
+      lectios: updatedList, // Aplica el cambio en la lista filtrada si es necesario
+    );
+  }
+
+
 }
 
