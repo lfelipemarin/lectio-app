@@ -1,6 +1,9 @@
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../viewmodels/daily_readings_viewmodel.dart'; // Adjust as necessary
+import '../viewmodels/daily_readings_viewmodel.dart';
+import 'guided_lectio_divina_page.dart';
 
 class DailyReadingsPage extends ConsumerStatefulWidget {
   const DailyReadingsPage({super.key});
@@ -10,23 +13,22 @@ class DailyReadingsPage extends ConsumerStatefulWidget {
 }
 
 class DailyReadingsPageState extends ConsumerState<DailyReadingsPage> {
-  String _selectedDate = DateTime.now().toIso8601String().substring(0, 10); // Default date
+  String? _selectedText;
+  String _selectedDate = DateTime.now().toIso8601String().substring(0, 10);
 
   @override
   Widget build(BuildContext context) {
-    // Pass the selected date to the provider
     final dailyReadings = ref.watch(dailyReadingsProvider(_selectedDate));
 
     return Scaffold(
       body: SingleChildScrollView(
-        // Wrap content inside SingleChildScrollView
         child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                 onPressed: () async {
-                  _selectDate(context); // Call the date selector
+                  _selectDate(context);
                 },
                 child: const Text('Seleccionar fecha'),
               ),
@@ -34,7 +36,7 @@ class DailyReadingsPageState extends ConsumerState<DailyReadingsPage> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
-                'Evangelio del dia: $_selectedDate', // Mostrar la fecha seleccionada
+                'Evangelio del día: $_selectedDate',
                 style: const TextStyle(fontSize: 16),
               ),
             ),
@@ -43,52 +45,73 @@ class DailyReadingsPageState extends ConsumerState<DailyReadingsPage> {
                 final readings = data['readings'] ?? [];
                 final commentary = data['commentary'] != null
                     ? {
-                        'title':
-                            data['commentary']['title'] ?? 'No title available',
+                        'title': data['commentary']['title'] ?? 'Sin título',
                         'description': data['commentary']['description'] ??
-                            'No description available',
+                            'Sin descripción',
                         'author':
-                            data['commentary']['author'] ?? 'Unknown author',
-                        'source': data['commentary']['source'] ??
-                            'No source available',
+                            data['commentary']['author'] ?? 'Autor desconocido',
+                        'source': data['commentary']['source'] ?? 'Sin fuente',
                       }
                     : null;
 
                 return Column(
                   children: [
-                    // List of readings
                     ListView.builder(
-                      shrinkWrap:
-                          true, // Ensures the ListView doesn't take up all space
-                      physics:
-                          const NeverScrollableScrollPhysics(), // Disables scrolling of ListView
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: readings.length,
                       itemBuilder: (context, index) {
                         final reading = readings[index];
                         return Card(
                           elevation: 4,
-                          margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: ListTile(
                             title: Text(
-                              reading['book'], // Book title
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              reading['book'],
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(reading['reference']), // Reference
+                                Text(reading['reference']),
                                 const SizedBox(height: 4),
-                                Text(reading['text']), // Reading text
+                                Listener(
+                                  onPointerUp: (event) {
+                                    if (_selectedText != null &&
+                                        _selectedText!.isNotEmpty) {
+                                      _showContextMenu(context, _selectedText!);
+                                      setState(() {
+                                        _selectedText =
+                                            null; // Reset selected text
+                                      });
+                                    }
+                                  },
+                                  child: SelectableText(
+                                    reading['text'],
+                                    onSelectionChanged: (selection, cause) {
+                                      final selectedText =
+                                          selection.textInside(reading['text']);
+                                      if (cause ==
+                                              SelectionChangedCause.longPress ||
+                                          cause == SelectionChangedCause.drag) {
+                                        setState(() {
+                                          _selectedText = selectedText;
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         );
                       },
                     ),
-                    // Commentary after the list
                     if (commentary != null) ...[
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -108,8 +131,7 @@ class DailyReadingsPageState extends ConsumerState<DailyReadingsPage> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  commentary['description'].replaceAll(
-                                      RegExp(r'^[ \t]+', multiLine: true), ''),
+                                  commentary['description'],
                                   style: const TextStyle(fontSize: 16),
                                 ),
                                 const SizedBox(height: 8),
@@ -122,7 +144,7 @@ class DailyReadingsPageState extends ConsumerState<DailyReadingsPage> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Tomado de: ${commentary['source']}',
+                                  'Fuente: ${commentary['source']}',
                                   style: const TextStyle(
                                     fontStyle: FontStyle.italic,
                                     color: Colors.grey,
@@ -146,7 +168,50 @@ class DailyReadingsPageState extends ConsumerState<DailyReadingsPage> {
     );
   }
 
-  // Method to select the date using showDatePicker
+  void _showContextMenu(BuildContext context, String selectedText) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.send),
+                title: const Text("Enviar a Lectio Guiada"),
+                onTap: () {
+                  Navigator.pop(context);
+                  _navigateToGuidedLectioDivina(selectedText);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.copy),
+                title: const Text("Copiar texto"),
+                onTap: () {
+                  Clipboard.setData(ClipboardData(text: selectedText));
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Texto copiado al portapapeles')),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _navigateToGuidedLectioDivina(String text) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GuidedLectioDivinaPage(initialText: text),
+      ),
+    );
+  }
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -155,7 +220,7 @@ class DailyReadingsPageState extends ConsumerState<DailyReadingsPage> {
       lastDate: DateTime(2101),
     );
 
-    if (picked != null && picked != DateTime.now()) {
+    if (picked != null) {
       setState(() {
         _selectedDate =
             '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';

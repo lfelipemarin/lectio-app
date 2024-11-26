@@ -6,7 +6,8 @@ import 'package:lectio_app/providers/auth_provider.dart';
 import 'package:lectio_app/views/authenticated_page.dart';
 
 class GuidedLectioDivinaPage extends ConsumerStatefulWidget {
-  const GuidedLectioDivinaPage({super.key});
+  final String? initialText;
+  const GuidedLectioDivinaPage({super.key, this.initialText});
 
   @override
   _GuidedLectioDivinaPageState createState() => _GuidedLectioDivinaPageState();
@@ -17,10 +18,20 @@ class _GuidedLectioDivinaPageState extends ConsumerState<GuidedLectioDivinaPage>
 
   int _currentStage = 0;
 
-  final TextEditingController _actioController = TextEditingController();
-  final TextEditingController _lectioController = TextEditingController();
-  final TextEditingController _meditationNotesController = TextEditingController();
-  final TextEditingController _oratioController = TextEditingController();
+  late TextEditingController _actioController;
+  late TextEditingController _lectioController;
+  late TextEditingController _meditationNotesController;
+  late TextEditingController _oratioController;
+
+  @override
+  void initState() {
+    super.initState();
+    // Inicializar los controladores con texto inicial
+    _actioController = TextEditingController();
+    _lectioController = TextEditingController(text: widget.initialText ?? '');
+    _meditationNotesController = TextEditingController();
+    _oratioController = TextEditingController();
+  }
 
   final bool _completedActio = false;
   bool _reminder = false;
@@ -56,8 +67,6 @@ class _GuidedLectioDivinaPageState extends ConsumerState<GuidedLectioDivinaPage>
       );
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -215,7 +224,7 @@ class _GuidedLectioDivinaPageState extends ConsumerState<GuidedLectioDivinaPage>
   }
 
     @override
-  void dispose() {
+    void dispose() {
     _lectioController.dispose();
     _meditationNotesController.dispose();
     _oratioController.dispose();
