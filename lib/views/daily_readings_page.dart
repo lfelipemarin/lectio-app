@@ -1,12 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../viewmodels/daily_readings_viewmodel.dart';
-import 'guided_lectio_divina_page.dart';
 
 class DailyReadingsPage extends ConsumerStatefulWidget {
-  const DailyReadingsPage({super.key});
+  final void Function(String) onNavigateToLectioGuiada;
+
+  const DailyReadingsPage({super.key, required this.onNavigateToLectioGuiada});
 
   @override
   DailyReadingsPageState createState() => DailyReadingsPageState();
@@ -181,7 +181,7 @@ class DailyReadingsPageState extends ConsumerState<DailyReadingsPage> {
                 title: const Text("Enviar a Lectio Guiada"),
                 onTap: () {
                   Navigator.pop(context);
-                  _navigateToGuidedLectioDivina(selectedText);
+                  widget.onNavigateToLectioGuiada(selectedText);
                 },
               ),
               ListTile(
@@ -200,15 +200,6 @@ class DailyReadingsPageState extends ConsumerState<DailyReadingsPage> {
           ),
         );
       },
-    );
-  }
-
-  void _navigateToGuidedLectioDivina(String text) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => GuidedLectioDivinaPage(initialText: text),
-      ),
     );
   }
 

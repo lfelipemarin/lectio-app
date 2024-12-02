@@ -1,3 +1,4 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,17 +7,20 @@ import 'package:lectio_app/providers/auth_provider.dart';
 import 'package:lectio_app/views/authenticated_page.dart';
 
 class GuidedLectioDivinaPage extends ConsumerStatefulWidget {
-  final String? initialText;
-  const GuidedLectioDivinaPage({super.key, this.initialText});
+  final String initialText;
+
+  const GuidedLectioDivinaPage({super.key, required this.initialText});
 
   @override
-  _GuidedLectioDivinaPageState createState() => _GuidedLectioDivinaPageState();
+  GuidedLectioDivinaPageState createState() => GuidedLectioDivinaPageState();
 }
 
-class _GuidedLectioDivinaPageState extends ConsumerState<GuidedLectioDivinaPage> {
+class GuidedLectioDivinaPageState
+    extends ConsumerState<GuidedLectioDivinaPage> {
   final LectioService _lectioService = LectioService();
 
   int _currentStage = 0;
+  late String _currentText;
 
   late TextEditingController _actioController;
   late TextEditingController _lectioController;
@@ -27,10 +31,18 @@ class _GuidedLectioDivinaPageState extends ConsumerState<GuidedLectioDivinaPage>
   void initState() {
     super.initState();
     // Inicializar los controladores con texto inicial
+    _currentText = widget.initialText;
     _actioController = TextEditingController();
     _lectioController = TextEditingController(text: widget.initialText ?? '');
     _meditationNotesController = TextEditingController();
     _oratioController = TextEditingController();
+  }
+
+  void updateText(String text) {
+    setState(() {
+      _currentText = text;
+    });
+    _lectioController.text = text;
   }
 
   final bool _completedActio = false;
@@ -59,7 +71,7 @@ class _GuidedLectioDivinaPageState extends ConsumerState<GuidedLectioDivinaPage>
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const AuthenticatedPage()),
-        );// or Navigator.pushReplacement(...) if needed
+        ); // or Navigator.pushReplacement(...) if needed
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -98,7 +110,8 @@ class _GuidedLectioDivinaPageState extends ConsumerState<GuidedLectioDivinaPage>
                         },
                         child: const Text('Anterior'),
                       ),
-                    const Spacer(), // Este espacio empuja el siguiente botón hacia la derecha
+                    const Spacer(),
+                    // Este espacio empuja el siguiente botón hacia la derecha
                     if (_currentStage < 3)
                       ElevatedButton(
                         onPressed: () {
@@ -124,7 +137,6 @@ class _GuidedLectioDivinaPageState extends ConsumerState<GuidedLectioDivinaPage>
       ),
     );
   }
-
 
   Widget _buildStageContent() {
     switch (_currentStage) {
@@ -223,8 +235,8 @@ class _GuidedLectioDivinaPageState extends ConsumerState<GuidedLectioDivinaPage>
     }
   }
 
-    @override
-    void dispose() {
+  @override
+  void dispose() {
     _lectioController.dispose();
     _meditationNotesController.dispose();
     _oratioController.dispose();
