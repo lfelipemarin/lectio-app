@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lectio_app/ads/banner_ad_widget.dart';
 import 'package:lectio_app/views/daily_readings_page.dart';
 import 'package:lectio_app/views/guided_lectio_divina_page.dart';
 import 'package:lectio_app/views/lectios/lectio_list_page.dart';
@@ -70,15 +70,6 @@ class AuthenticatedPageState extends ConsumerState<AuthenticatedPage> {
     });
   }
 
-  void _goToDailyReadings() {
-    setState(() {
-      _currentIndex = 0;
-    });
-
-    // Clear navigation stack for the first tab
-    _navigatorKeys[0].currentState?.popUntil((route) => route.isFirst);
-  }
-
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(authUserProvider);
@@ -91,18 +82,25 @@ class AuthenticatedPageState extends ConsumerState<AuthenticatedPage> {
           profileImageUrl: user.value?.photoURL,
           userName: user.value?.displayName ?? 'User',
         ),
-        body: Stack(
+        body: Column(
           children: [
-            for (int i = 0; i < _pages.length; i++)
-              Offstage(
-                offstage: _currentIndex != i,
-                child: Navigator(
-                  key: _navigatorKeys[i],
-                  onGenerateRoute: (routeSettings) {
-                    return MaterialPageRoute(builder: (_) => _pages[i]);
-                  },
-                ),
+            const BannerAdWidget(), // The banner ad at the top
+            Expanded(
+              child: Stack(
+                children: [
+                  for (int i = 0; i < _pages.length; i++)
+                    Offstage(
+                      offstage: _currentIndex != i,
+                      child: Navigator(
+                        key: _navigatorKeys[i],
+                        onGenerateRoute: (routeSettings) {
+                          return MaterialPageRoute(builder: (_) => _pages[i]);
+                        },
+                      ),
+                    ),
+                ],
               ),
+            ),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(

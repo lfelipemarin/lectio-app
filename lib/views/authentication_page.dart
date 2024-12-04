@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -31,7 +33,7 @@ class AuthenticationPageState extends State<AuthenticationPage> {
       await _auth.signInWithCredential(credential);
       // Aquí puedes navegar a la pantalla principal después de un login exitoso
     } catch (e) {
-      print("Error de inicio de sesión con Google: $e");
+      log("Error de inicio de sesión con Google: $e");
     }
   }
 
@@ -44,7 +46,7 @@ class AuthenticationPageState extends State<AuthenticationPage> {
       );
       // Aquí puedes navegar a la pantalla principal después de un login exitoso
     } catch (e) {
-      print("Error de inicio de sesión con Email: $e");
+      log("Error de inicio de sesión con Email: $e");
     }
   }
 
@@ -57,7 +59,7 @@ class AuthenticationPageState extends State<AuthenticationPage> {
       );
       // Aquí puedes navegar a la pantalla principal después de un registro exitoso
     } catch (e) {
-      print("Error de registro con Email: $e");
+      log("Error de registro con Email: $e");
     }
   }
 

@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     implementation platform('com.google.firebase:firebase-bom:33.5.1')
+    implementation 'com.google.android.gms:play-services-ads:23.6.0'
 }
 
 android {
