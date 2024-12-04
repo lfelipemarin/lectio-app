@@ -59,6 +59,7 @@ dev_dependencies:
   build_runner: ^2.4.13
   custom_lint: ^0.7.0
   riverpod_lint: ^2.6.2
+  flutter_launcher_icons: ^0.14.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -102,12 +103,12 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
 flutter_native_splash:
-  color: "#000000"
-  image: assets/images/splash_logo.jpeg
+  color: "#f3ebd5"
+  image: assets/images/app_logo.png
   android_12:
-    image: assets/images/splash_logo.jpeg
-    color: "#000000"
-    icon_background_color: "#111111"
+    image: assets/images/app_logo.png
+    color: "#f3ebd5"
+    icon_background_color: "#f3ebd5"
   android: true
   ios: true
   web: true
