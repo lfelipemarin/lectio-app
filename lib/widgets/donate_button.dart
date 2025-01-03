@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DonateButton extends StatelessWidget {
-  const DonateButton({Key? key}) : super(key: key);
+  const DonateButton({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lectio_app/providers/theme_provider.dart'; // Import your theme provider
 import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase for logout
 import 'package:lectio_app/widgets/donate_button.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HeaderBar extends ConsumerWidget implements PreferredSizeWidget {
   final String? profileImageUrl;
