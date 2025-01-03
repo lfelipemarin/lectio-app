@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../ads/banner_ad_widget.dart';
+
 class AuthenticationPage extends StatefulWidget {
   const AuthenticationPage({super.key});
 
@@ -72,6 +74,7 @@ class AuthenticationPageState extends State<AuthenticationPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const BannerAdWidget(adUnitId: 'ca-app-pub-8656992370512809/1954841426'), // The banner ad at the top
             TextField(
               controller: _emailController,
               decoration: const InputDecoration(labelText: 'Correo electrónico'),

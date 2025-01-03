@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lectio_app/providers/theme_provider.dart'; // Import your theme provider
 import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase for logout
+import 'package:url_launcher/url_launcher.dart';
 
 class HeaderBar extends ConsumerWidget implements PreferredSizeWidget {
   final String? profileImageUrl;
@@ -29,7 +30,11 @@ class HeaderBar extends ConsumerWidget implements PreferredSizeWidget {
             themeNotifier.toggleTheme();
           },
         ),
-
+        ElevatedButton.icon(
+          onPressed: _launchDonateURL,
+          icon: const Icon(Icons.volunteer_activism),
+          label: const Text('Donar'),
+        ),
         // User Profile with Dropdown Menu
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -47,7 +52,7 @@ class HeaderBar extends ConsumerWidget implements PreferredSizeWidget {
                     children: [
                       Icon(Icons.logout, size: 18),
                       SizedBox(width: 8),
-                      Text('Logout'),
+                      Text('Cerrar Sesion'),
                     ],
                   ),
                 ),
@@ -76,6 +81,16 @@ class HeaderBar extends ConsumerWidget implements PreferredSizeWidget {
         ),
       ],
     );
+  }
+
+  // Method to launch the donation URL
+  void _launchDonateURL() async {
+    const url = 'https://www.paypal.com/donate?hosted_button_id=YOUR_BUTTON_ID';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   // Logout function

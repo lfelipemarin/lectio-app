@@ -1,5 +1,5 @@
 name: lectio_app
-description: "A new Flutter project."
+description: "Aplicacion para hacer la Lectio Divina guiada."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -45,6 +45,7 @@ dependencies:
   google_sign_in: ^6.2.2
   flutter_native_splash: ^2.4.3
   google_mobile_ads: ^5.2.0
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:

@@ -84,7 +84,9 @@ class AuthenticatedPageState extends ConsumerState<AuthenticatedPage> {
         ),
         body: Column(
           children: [
-            const BannerAdWidget(), // The banner ad at the top
+            const BannerAdWidget(
+                adUnitId:
+                    'ca-app-pub-8656992370512809/5970868822'), // The banner ad at the top
             Expanded(
               child: Stack(
                 children: [
