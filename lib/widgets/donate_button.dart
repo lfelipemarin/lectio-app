@@ -45,7 +45,7 @@ class DonateButton extends StatelessWidget {
               ),
               const SizedBox(height: 16.0),
               const Text(
-                'Banco: Banco Ejemplo\nCuenta: 1234567890\nTitular: Lectio Divina App\nSWIFT: ABCD1234',
+                'Banco: Bancolombia\nCuenta: 01658380156\nTitular: Luis Felipe Marin\nSWIFT: COLOCOBM',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
