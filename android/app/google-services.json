@@ -59,6 +59,14 @@
           }
         },
         {
+          "client_id": "485166763553-79at62c21jm41mssp76oe8j8s2c3jc2d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lectio_divina.lectio_app",
+            "certificate_hash": "9434a31fe7b97abd657c8f70e7046941f80fe398"
+          }
+        },
+        {
           "client_id": "485166763553-24uiac5bs6do7v5mjb6vi505o64j5cub.apps.googleusercontent.com",
           "client_type": 3
         }
